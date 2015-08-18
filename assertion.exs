@@ -5,7 +5,7 @@ defmodule Assertion do
     end
   end
 
-  defmacro extend(option \\ []) do
+  defmacro __using__(_options) do
     quote do
       import unquote __MODULE__
 
@@ -46,8 +46,7 @@ end
 ###########################
 
 defmodule MathTest do
-  require Assertion
-  Assertion.extend
+  use Assertion
 
 #  test "integraters can be added and subtraced" do
 #    assert 1 + 1 == 2
