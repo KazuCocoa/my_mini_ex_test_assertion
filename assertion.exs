@@ -19,11 +19,26 @@ defmodule Assertion.Test do
     """
   end
 
+  def assert(:>, lhs, rhs) when lhs > rhs do
+    IO.write "."
+  end
   def assert(:>, lhs, rhs) do
     IO.puts """
     FAILURE:
       Expected:       #{lhs}
       to be equal to: #{rhs}
     """
+  end
+end
+
+
+defmodule MathTest do
+  import Assertion
+
+  def run do
+    assert 5 == 5
+    assert 10 > 0
+    assert 1 > 2
+    assert 10 * 10 == 100
   end
 end
