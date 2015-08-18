@@ -41,10 +41,8 @@ defmodule Assertion.Test do
       spawn_link fn ->
         case apply(module, test_func, []) do
           :ok             ->
-            IO.inspect Kernel.self
             send pid, IO.write "."
           {:fail, reason} ->
-            IO.inspect Kernel.self
             send pid, IO.puts """
             ==================================
             FAILURE: #{description}
