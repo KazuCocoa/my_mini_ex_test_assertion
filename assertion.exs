@@ -7,11 +7,19 @@ defmodule Assertion do
 
   defmacro __using__(_options) do
     quote do
-      import unquote __MODULE__
+      import unquote(__MODULE__)
 
       # http://elixir-lang.org/docs/stable/elixir/Module.html#register_attribute/3
       Module.register_attribute __MODULE__, :tests, accumulate: true
 
+      # http://elixir-lang.org/docs/stable/elixir/Module.html
+      # @before_compile indicate MODULE have __before_compile__ method.
+      @before_compile unquote(__MODULE__) # Assertion module
+    end
+  end
+
+  defmacro __before_compile__(_env) do
+    quote do
       def run do
         IO.puts "Running the tests (#{inspect @tests})"
       end
@@ -27,7 +35,6 @@ defmodule Assertion do
     end
   end
 end
-
 
 defmodule Assertion.Test do
   def assert(:==, lhs, rhs) when lhs == rhs do
