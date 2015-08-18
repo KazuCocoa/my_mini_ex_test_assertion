@@ -35,18 +35,26 @@ end
 
 defmodule Assertion.Test do
   def run(tests, module) do
-    Enum.each tests, fn {test_func, description} ->
-      case apply(module, test_func, []) do
-        :ok             -> IO.write "."
-        {:fail, reason} -> IO.puts """
+    pid = self()
 
-          ==================================
-          FAILURE: #{description}
-          ==================================
-          #{reason}
-          """
+    Enum.each tests, fn {test_func, description} ->
+      spawn_link fn ->
+        case apply(module, test_func, []) do
+          :ok             ->
+            IO.inspect Kernel.self
+            send pid, IO.write "."
+          {:fail, reason} ->
+            IO.inspect Kernel.self
+            send pid, IO.puts """
+            ==================================
+            FAILURE: #{description}
+            ==================================
+            #{reason}
+            """
+        end
       end
     end
+
   end
 
   def assert(:==, lhs, rhs) when lhs == rhs do
