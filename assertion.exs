@@ -59,25 +59,32 @@ defmodule Assertion.Test do
     :ok
   end
   def assert(:==, lhs,  rhs) do
-    {:fail, """
-      FAILURE:
-        Expected:       #{lhs}
-        to be equal to: #{rhs}
-      """
-    }
+    assert_temp lhs, "to be equal to", rhs
   end
 
   def assert(:>, lhs, rhs) when lhs > rhs do
     :ok
   end
   def assert(:>, lhs, rhs) do
+    assert_temp lhs, "to be more than", rhs
+  end
+
+  def assert(:<, lhs, rhs) when lhs < rhs do
+    :ok
+  end
+  def assert(:<, lhs, rhs) do
+    assert_temp lhs, "to be smaller than", rhs
+  end
+
+  defp assert_temp(lhs, message, rhs) do
     {:fail, """
       FAILURE:
-        Expected:       #{lhs}
-        to be equal to: #{rhs}
+        Expected:           #{lhs}
+        #{message}: #{rhs}
       """
     }
   end
+
 end
 
 ###########################
@@ -88,9 +95,9 @@ defmodule MathTest do
   use Assertion
 
   test "integraters can be added and subtraced" do
-    assert 1 + 1 == 2
-    assert 2 + 3 == 5
-    assert 5 - 5 == 10
+    assert 5 - 2 == 3
+    assert 5 - 2 > 1
+    assert 5 - 2 < 5
   end
 
   test "integraters can be multiplied and divided" do
